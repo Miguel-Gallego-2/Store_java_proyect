@@ -11,7 +11,7 @@ package StoreProyect;
 public class Product {
     String name;
     String Price;
-    int cuantity;
+    int stock;
 
     public Product() {
     }
@@ -32,12 +32,12 @@ public class Product {
         this.Price = Price;
     }
 
-    public int getCuantity() {
-        return cuantity;
+    public int getStock() {
+        return stock;
     }
 
-    public void setCuantity(int cuantity) {
-        this.cuantity = cuantity;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
     
     
