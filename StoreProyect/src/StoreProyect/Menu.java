@@ -9,7 +9,8 @@ import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.table.DefaultTableModel;
 
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
@@ -20,54 +21,98 @@ public class Menu extends javax.swing.JFrame {
     /**
      * Creates new form Menu
      */
-    public Menu() {
-        initComponents();
-    }
     private ArrayList<Product> lstProducts;
     DefaultTableModel tableModel;
     String[] COLUMNS = {"Name", "Price", "Stock"};
 
+    public Menu() {
+        initComponents();
+        lstProducts = new ArrayList<>();
+    }
 
     private void AddProduct(Product productToAdd) {
         lstProducts.add(productToAdd);
     }
 
     private void RemoveProduct(Product productToRemove) {
-        lstProducts.add(productToRemove);
+        lstProducts.remove(productToRemove);
     }
 
-    private String askUserProduct(String message) {
-        boolean flag;
-        String nameProduct= " ";
+    private String askUserInfo(String message, String value) {
+        boolean flag=false;
+        String nameProduct = new String();
         do {
             try {
-                nameProduct = JOptionPane.showInputDialog(message);
-                flag = false;
+                nameProduct = JOptionPane.showInputDialog(message, value);
+              
             } catch (Exception e) {
                 showMessageDialog(null, "Please, insert correct values");
                 flag = true;
             }
         } while (flag);
-            return nameProduct;
+        return nameProduct;
     }
-    
+
+    private Product getNewProductInfo() {
+        Product product = new Product();
+        String name;
+        String price;
+        String stock;
+
+        name = "Insert the name of the new Product :";
+        price = "Insert the price of the new product : ";
+        stock = "Insert the stock of the new product : ";
+
+        String newName = askUserInfo(name, "");
+        String newPrice = askUserInfo(price, "");
+        int newStock = Integer.parseInt(askUserInfo(stock, ""));
+        product.setName(newName);
+        product.setPrice(newPrice);
+        product.setStock(newStock);
+
+        return product;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        int selectedRow = tblInventory.getSelectedRow();
+        if (selectedRow != -1) {
+            // Get the values from the selected row
+            String name = (String) tableModel.getValueAt(selectedRow, 0);
+            String price = (String) tableModel.getValueAt(selectedRow, 1);
+            int stock = Integer.parseInt((String) tableModel.getValueAt(selectedRow, 2));
+
+            // Prompt the user to edit the values
+            String newName = askUserInfo("Insert the  new name of the Product :", name);
+            String newPrice = askUserInfo("Insert the new price of the product : ", price);
+            int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product : ", String.valueOf(stock)));
+
+            // Update the model with the new values
+            tableModel.setValueAt(newName, selectedRow, 0);
+            tableModel.setValueAt(newPrice, selectedRow, 1);
+            tableModel.setValueAt(newStock, selectedRow, 2);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+        }
+    }
+
     private void initObjects() {
-        String[][] data = new String[lstProducts.size()][8];
+        String[][] data = new String[lstProducts.size()][3];
         for (int i = 0; i < lstProducts.size(); i++) {
             data[i][0] = lstProducts.get(i).getName();
             data[i][1] = String.valueOf(lstProducts.get(i).getPrice());
             data[i][2] = String.valueOf(lstProducts.get(i).getStock());
-          
-        tableModel = new DefaultTableModel(data, COLUMNS) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tblInventory.setModel(tableModel);
-        tblInventory.setAutoCreateRowSorter(true);
+
+            tableModel = new DefaultTableModel(data, COLUMNS) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return true;
+                }
+            };
+            tblInventory.setModel(tableModel);
+            tblInventory.setAutoCreateRowSorter(true);
+        }
     }
- }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,6 +127,7 @@ public class Menu extends javax.swing.JFrame {
         btnAddProduct = new javax.swing.JButton();
         btnRemoveProduct = new javax.swing.JButton();
         lbInventory = new javax.swing.JLabel();
+        btnEditProduct = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -127,24 +173,34 @@ public class Menu extends javax.swing.JFrame {
         lbInventory.setFont(new java.awt.Font("Segoe UI Emoji", 3, 12)); // NOI18N
         lbInventory.setText("Inventory");
 
+        btnEditProduct.setText("Edit Product");
+        btnEditProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditProductActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(134, 134, 134)
+                .addComponent(lbInventory, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAddProduct)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-                                .addComponent(btnRemoveProduct))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(134, 134, 134)
-                        .addComponent(lbInventory, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32))
+                        .addComponent(btnAddProduct)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEditProduct)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(btnRemoveProduct)))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,7 +210,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRemoveProduct)
-                    .addComponent(btnAddProduct))
+                    .addComponent(btnAddProduct)
+                    .addComponent(btnEditProduct))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(23, Short.MAX_VALUE))
@@ -162,19 +219,21 @@ public class Menu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-  
+
     private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_btnRemoveProductActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-    Product producto=new Product();
-    producto.setName("test");
-    AddProduct(producto);
+        AddProduct(getNewProductInfo());
         initObjects();
 
-    // TODO add your handling code here:
+        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddProductActionPerformed
+
+    private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
+        actionPerformed(evt);
+    }//GEN-LAST:event_btnEditProductActionPerformed
 
     /**
      * @param args the command line arguments
@@ -213,6 +272,7 @@ public class Menu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
+    private javax.swing.JButton btnEditProduct;
     private javax.swing.JButton btnRemoveProduct;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbInventory;
