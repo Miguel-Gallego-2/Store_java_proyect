@@ -8,43 +8,28 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
 
-/**
- *
- * @author migue
- */
 public class Menu extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Menu
-     */
+    private Inventory inventory;
     private ArrayList<Product> lstProducts;
     DefaultTableModel tableModel;
     String[] COLUMNS = {"Name", "Price", "Stock"};
 
     public Menu() {
+        inventory = new Inventory();
         initComponents();
-        lstProducts = new ArrayList<>();
+        lstProducts = inventory.getLstProducts();
+        initObjects();
     }
 
-    private void AddProduct(Product productToAdd) {
-        lstProducts.add(productToAdd);
-    }
-
-    private void RemoveProduct(Product productToRemove) {
-        lstProducts.remove(productToRemove);
-    }
-
-    private String askUserInfo(String message, String value) {
+     public String askUserInfo(String message, String value) {
         boolean flag=false;
         String nameProduct = new String();
         do {
             try {
                 nameProduct = JOptionPane.showInputDialog(message, value);
-              
             } catch (Exception e) {
                 showMessageDialog(null, "Please, insert correct values");
                 flag = true;
@@ -53,45 +38,53 @@ public class Menu extends javax.swing.JFrame {
         return nameProduct;
     }
 
-    private Product getNewProductInfo() {
+    public Product getNewProductInfo() {
         Product product = new Product();
-        String name;
-        String price;
-        String stock;
-
-        name = "Insert the name of the new Product :";
-        price = "Insert the price of the new product : ";
-        stock = "Insert the stock of the new product : ";
-
+        String name = "Insert the name of the new Product :";
+        String price = "Insert the price of the new product : ";
+        String stock = "Insert the stock of the new product : ";
         String newName = askUserInfo(name, "");
-        String newPrice = askUserInfo(price, "");
+        double newPrice = Double.parseDouble(askUserInfo(price, ""));
         int newStock = Integer.parseInt(askUserInfo(stock, ""));
-        product.setName(newName);
-        product.setPrice(newPrice);
-        product.setStock(newStock);
-
+        inventory.createProduct(product, newName, newPrice, newStock);
         return product;
     }
-
-    public void actionPerformed(ActionEvent e) {
+    
+    public List<Object> getValueTable(ActionEvent e) {
         int selectedRow = tblInventory.getSelectedRow();
+        List<Object> result = new ArrayList<>();
         if (selectedRow != -1) {
             // Get the values from the selected row
             String name = (String) tableModel.getValueAt(selectedRow, 0);
-            String price = (String) tableModel.getValueAt(selectedRow, 1);
+            double price = Double.parseDouble((String) tableModel.getValueAt(selectedRow, 1));
             int stock = Integer.parseInt((String) tableModel.getValueAt(selectedRow, 2));
+            // Get the selected product
+            Product selectedProduct = inventory.getProduct(name, price, stock);
+            result.add(selectedProduct);
+            result.add(selectedRow);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+        }
+        return result;
+    }
 
-            // Prompt the user to edit the values
-            String newName = askUserInfo("Insert the  new name of the Product :", name);
-            String newPrice = askUserInfo("Insert the new price of the product : ", price);
-            int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product : ", String.valueOf(stock)));
-
+    public void updateTable(Product product, int selectedRow, int a) {
+        switch(a){
+            case 0:
+            String newName = askUserInfo("Insert the new name of the Product: ", product.getName());
+            Double newPrice = Double.valueOf(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getPrice())));
+            int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getStock()))); 
+            // Update the product
+            inventory.updateProduct(product, newName, newPrice, newStock);
             // Update the model with the new values
             tableModel.setValueAt(newName, selectedRow, 0);
             tableModel.setValueAt(newPrice, selectedRow, 1);
             tableModel.setValueAt(newStock, selectedRow, 2);
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+            break;
+            case 1:
+            inventory.removeProduct(product);
+            initObjects();
+            break;
         }
     }
 
@@ -101,7 +94,6 @@ public class Menu extends javax.swing.JFrame {
             data[i][0] = lstProducts.get(i).getName();
             data[i][1] = String.valueOf(lstProducts.get(i).getPrice());
             data[i][2] = String.valueOf(lstProducts.get(i).getStock());
-
             tableModel = new DefaultTableModel(data, COLUMNS) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
@@ -113,11 +105,7 @@ public class Menu extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -221,18 +209,22 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
-
+        var results = getValueTable(evt);
+        Product product = (Product) results.get(0);
+        int selectedRow = (int) results.get(1);
+        updateTable(product,selectedRow,1);
     }//GEN-LAST:event_btnRemoveProductActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        AddProduct(getNewProductInfo());
+        inventory.addProduct(getNewProductInfo());
         initObjects();
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
-        actionPerformed(evt);
+        var results = getValueTable(evt);
+        Product product = (Product) results.get(0);
+        int selectedRow = (int) results.get(1);
+        updateTable(product,selectedRow,0);
     }//GEN-LAST:event_btnEditProductActionPerformed
 
     /**

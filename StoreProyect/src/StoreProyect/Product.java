@@ -4,18 +4,19 @@
  */
 package StoreProyect;
 
-/**
- *
- * @author migue
- */
 public class Product {
-    String name;
-    String Price;
-    int stock;
-
+   private String name;
+    private double Price;
+    private int stock;
     public Product() {
     }
 
+    public Product(String name, double Price, int stock) {
+        this.name = name;
+        this.Price = Price;
+        this.stock = stock;
+    }
+    
     public String getName() {
         return name;
     }
@@ -24,11 +25,11 @@ public class Product {
         this.name = name;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return Price;
     }
 
-    public void setPrice(String Price) {
+    public void setPrice(double Price) {
         this.Price = Price;
     }
 
@@ -38,7 +39,5 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
-    }
-    
-    
+    } 
 }
