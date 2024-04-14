@@ -4,10 +4,6 @@
  */
 package StoreProyect;
 
-/**
- *
- * @author migue
- */
 public class Product {
     private String name;
     private double price;

@@ -5,16 +5,8 @@
 package StoreProyect;
 
 import java.util.ArrayList;
-
-/**
- *
- * @author migue
- */
 public class Inventory {
-
-    private ArrayList<Product> lstProducts = new ArrayList<>() {
-    };
-
+    private ArrayList<Product> lstProducts = new ArrayList<>() {};
     public Inventory() {
     }
 
