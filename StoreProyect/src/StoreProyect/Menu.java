@@ -1,5 +1,5 @@
-
 package StoreProyect;
+
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -9,8 +9,8 @@ import java.util.List;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 
-
 public class Menu extends javax.swing.JFrame {
+
     private Inventory inventory;
     private ArrayList<Product> lstProducts;
     DefaultTableModel tableModel;
@@ -22,9 +22,9 @@ public class Menu extends javax.swing.JFrame {
         lstProducts = inventory.getLstProducts();
         initObjects();
     }
-    
+
     public String askUserInfo(String message, String value) {
-        boolean flag=false;
+        boolean flag = false;
         String nameProduct = new String();
         do {
             try {
@@ -36,7 +36,7 @@ public class Menu extends javax.swing.JFrame {
         } while (flag);
         return nameProduct;
     }
-    
+
     public Product getNewProductInfo() {
         Product product = new Product();
         String name = "Insert the name of the new Product :";
@@ -48,7 +48,7 @@ public class Menu extends javax.swing.JFrame {
         inventory.createProduct(product, newName, newPrice, newStock);
         return product;
     }
-    
+
     public List<Object> getValueTable(ActionEvent e) {
         int selectedRow = tblInventory.getSelectedRow();
         List<Object> result = new ArrayList<>();
@@ -63,31 +63,32 @@ public class Menu extends javax.swing.JFrame {
             result.add(selectedRow);
         } else {
             JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+            return null;
         }
         return result;
     }
 
     public void updateTable(Product product, int selectedRow, int a) {
-        switch(a){
+        switch (a) {
             case 0:
-            String newName = askUserInfo("Insert the new name of the Product: ", product.getName());
-            Double newPrice = Double.valueOf(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getPrice())));
-            int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getStock()))); 
-            // Update the product
-            inventory.updateProduct(product, newName, newPrice, newStock);
-            // Update the model with the new values
-            tableModel.setValueAt(newName, selectedRow, 0);
-            tableModel.setValueAt(newPrice, selectedRow, 1);
-            tableModel.setValueAt(newStock, selectedRow, 2);
-            break;
+                String newName = askUserInfo("Insert the new name of the Product: ", product.getName());
+                Double newPrice = Double.valueOf(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getPrice())));
+                int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getStock())));
+                // Update the product
+                inventory.updateProduct(product, newName, newPrice, newStock);
+                // Update the model with the new values
+                tableModel.setValueAt(newName, selectedRow, 0);
+                tableModel.setValueAt(newPrice, selectedRow, 1);
+                tableModel.setValueAt(newStock, selectedRow, 2);
+                break;
             case 1:
-            inventory.removeProduct(product);
-            initObjects();
-            break;
+                inventory.removeProduct(product);
+                initObjects();
+                break;
         }
     }
-     
-   private void initObjects() {
+
+    private void initObjects() {
         String[][] data = new String[lstProducts.size()][3];
         for (int i = 0; i < lstProducts.size(); i++) {
             data[i][0] = lstProducts.get(i).getName();
@@ -220,16 +221,20 @@ public class Menu extends javax.swing.JFrame {
 
     private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
         var results = getValueTable(evt);
-        Product product = (Product) results.get(0);
-        int selectedRow = (int) results.get(1);
-        updateTable(product,selectedRow,0);
+        if (results != null) {
+            Product product = (Product) results.get(0);
+            int selectedRow = (int) results.get(1);
+            updateTable(product, selectedRow, 0);
+        }
     }//GEN-LAST:event_btnEditProductActionPerformed
 
     private void removeProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeProductActionPerformed
         var results = getValueTable(evt);
-        Product product = (Product) results.get(0);
-        int selectedRow = (int) results.get(1);
-        updateTable(product,selectedRow,1);
+        if (results != null) {
+            Product product = (Product) results.get(0);
+            int selectedRow = (int) results.get(1);
+            updateTable(product, selectedRow, 1);
+        }
     }//GEN-LAST:event_removeProductActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
