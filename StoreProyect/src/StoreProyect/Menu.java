@@ -1,50 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package StoreProyect;
 
+package StoreProyect;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 
-/**
- *
- * @author migue
- */
+
 public class Menu extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Menu
-     */
+    private Inventory inventory;
     private ArrayList<Product> lstProducts;
     DefaultTableModel tableModel;
     String[] COLUMNS = {"Name", "Price", "Stock"};
 
     public Menu() {
+        inventory = new Inventory();
         initComponents();
-        lstProducts = new ArrayList<>();
+        lstProducts = inventory.getLstProducts();
+        initObjects();
     }
-
-    private void AddProduct(Product productToAdd) {
-        lstProducts.add(productToAdd);
-    }
-
-    private void RemoveProduct(Product productToRemove) {
-        lstProducts.remove(productToRemove);
-    }
-
-    private String askUserInfo(String message, String value) {
+    
+    public String askUserInfo(String message, String value) {
         boolean flag=false;
         String nameProduct = new String();
         do {
             try {
                 nameProduct = JOptionPane.showInputDialog(message, value);
-              
             } catch (Exception e) {
                 showMessageDialog(null, "Please, insert correct values");
                 flag = true;
@@ -52,56 +36,63 @@ public class Menu extends javax.swing.JFrame {
         } while (flag);
         return nameProduct;
     }
-
-    private Product getNewProductInfo() {
+    
+    public Product getNewProductInfo() {
         Product product = new Product();
-        String name;
-        String price;
-        String stock;
-
-        name = "Insert the name of the new Product :";
-        price = "Insert the price of the new product : ";
-        stock = "Insert the stock of the new product : ";
-
+        String name = "Insert the name of the new Product :";
+        String price = "Insert the price of the new product : ";
+        String stock = "Insert the stock of the new product : ";
         String newName = askUserInfo(name, "");
-        String newPrice = askUserInfo(price, "");
+        double newPrice = Double.parseDouble(askUserInfo(price, ""));
         int newStock = Integer.parseInt(askUserInfo(stock, ""));
-        product.setName(newName);
-        product.setPrice(newPrice);
-        product.setStock(newStock);
-
+        inventory.createProduct(product, newName, newPrice, newStock);
         return product;
     }
-
-    public void actionPerformed(ActionEvent e) {
+    
+    public List<Object> getValueTable(ActionEvent e) {
         int selectedRow = tblInventory.getSelectedRow();
+        List<Object> result = new ArrayList<>();
         if (selectedRow != -1) {
             // Get the values from the selected row
             String name = (String) tableModel.getValueAt(selectedRow, 0);
-            String price = (String) tableModel.getValueAt(selectedRow, 1);
+            double price = Double.parseDouble((String) tableModel.getValueAt(selectedRow, 1));
             int stock = Integer.parseInt((String) tableModel.getValueAt(selectedRow, 2));
+            // Get the selected product
+            Product selectedProduct = inventory.getProduct(name, price, stock);
+            result.add(selectedProduct);
+            result.add(selectedRow);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+        }
+        return result;
+    }
 
-            // Prompt the user to edit the values
-            String newName = askUserInfo("Insert the  new name of the Product :", name);
-            String newPrice = askUserInfo("Insert the new price of the product : ", price);
-            int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product : ", String.valueOf(stock)));
-
+    public void updateTable(Product product, int selectedRow, int a) {
+        switch(a){
+            case 0:
+            String newName = askUserInfo("Insert the new name of the Product: ", product.getName());
+            Double newPrice = Double.valueOf(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getPrice())));
+            int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getStock()))); 
+            // Update the product
+            inventory.updateProduct(product, newName, newPrice, newStock);
             // Update the model with the new values
             tableModel.setValueAt(newName, selectedRow, 0);
             tableModel.setValueAt(newPrice, selectedRow, 1);
             tableModel.setValueAt(newStock, selectedRow, 2);
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a row to edit.");
+            break;
+            case 1:
+            inventory.removeProduct(product);
+            initObjects();
+            break;
         }
     }
-
-    private void initObjects() {
+     
+   private void initObjects() {
         String[][] data = new String[lstProducts.size()][3];
         for (int i = 0; i < lstProducts.size(); i++) {
             data[i][0] = lstProducts.get(i).getName();
             data[i][1] = String.valueOf(lstProducts.get(i).getPrice());
             data[i][2] = String.valueOf(lstProducts.get(i).getStock());
-
             tableModel = new DefaultTableModel(data, COLUMNS) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
@@ -113,48 +104,37 @@ public class Menu extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblInventory = new javax.swing.JTable();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
         btnAddProduct = new javax.swing.JButton();
-        btnRemoveProduct = new javax.swing.JButton();
-        lbInventory = new javax.swing.JLabel();
         btnEditProduct = new javax.swing.JButton();
+        removeProduct = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         tblInventory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Name", "Price ", "Stock"
+                "Name", "Price", "Stock"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true, true
-            };
+        ));
+        jScrollPane1.setViewportView(tblInventory);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
             }
         });
-        jScrollPane1.setViewportView(tblInventory);
-        if (tblInventory.getColumnModel().getColumnCount() > 0) {
-            tblInventory.getColumnModel().getColumn(0).setResizable(false);
-            tblInventory.getColumnModel().getColumn(1).setResizable(false);
-            tblInventory.getColumnModel().getColumn(2).setResizable(false);
-        }
 
         btnAddProduct.setText("Add Product");
         btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
@@ -163,16 +143,6 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        btnRemoveProduct.setText("Remove Product");
-        btnRemoveProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveProductActionPerformed(evt);
-            }
-        });
-
-        lbInventory.setFont(new java.awt.Font("Segoe UI Emoji", 3, 12)); // NOI18N
-        lbInventory.setText("Inventory");
-
         btnEditProduct.setText("Edit Product");
         btnEditProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,89 +150,97 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
+        removeProduct.setText("Remove Product");
+        removeProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeProductActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtSearch)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                .addGap(33, 33, 33)
+                .addComponent(btnSearch)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnAddProduct)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                .addComponent(btnEditProduct)
+                .addGap(73, 73, 73)
+                .addComponent(removeProduct)
+                .addGap(85, 85, 85))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(41, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAddProduct)
+                    .addComponent(btnEditProduct)
+                    .addComponent(removeProduct))
+                .addGap(36, 36, 36))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(134, 134, 134)
-                .addComponent(lbInventory, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(btnAddProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnEditProduct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                        .addComponent(btnRemoveProduct)))
-                .addGap(20, 20, 20))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(lbInventory)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRemoveProduct)
-                    .addComponent(btnAddProduct)
-                    .addComponent(btnEditProduct))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 29, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRemoveProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProductActionPerformed
-
-    }//GEN-LAST:event_btnRemoveProductActionPerformed
-
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        AddProduct(getNewProductInfo());
+        inventory.addProduct(getNewProductInfo());
         initObjects();
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddProductActionPerformed
 
     private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
-        actionPerformed(evt);
+        var results = getValueTable(evt);
+        Product product = (Product) results.get(0);
+        int selectedRow = (int) results.get(1);
+        updateTable(product,selectedRow,0);
     }//GEN-LAST:event_btnEditProductActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void removeProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeProductActionPerformed
+        var results = getValueTable(evt);
+        Product product = (Product) results.get(0);
+        int selectedRow = (int) results.get(1);
+        updateTable(product,selectedRow,1);
+    }//GEN-LAST:event_removeProductActionPerformed
 
-        /* Create and display the form */
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String searchText = txtSearch.getText().toLowerCase();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        tblInventory.setRowSorter(sorter);
+        var rowFilter = RowFilter.regexFilter("(?i)" + searchText);
+        sorter.setRowFilter(rowFilter);
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Menu().setVisible(true);
@@ -273,9 +251,11 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnEditProduct;
-    private javax.swing.JButton btnRemoveProduct;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbInventory;
+    private javax.swing.JButton removeProduct;
     private javax.swing.JTable tblInventory;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
