@@ -23,14 +23,34 @@ public class Menu extends javax.swing.JFrame {
         initObjects();
     }
 
-    public String askUserInfo(String message, String value) {
+    public  int askForInt(String message,String value) {
+        while (true) {
+            try {
+                return Integer.parseInt(askForInput(message,value));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+            }
+        }
+    }
+
+    public  double askForDouble(String message,String value) {
+        while (true) {
+            try {
+                return Double.parseDouble(askForInput(message,value));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+            }
+        }
+    }
+
+    public String askForInput(String message, String value) {
         boolean flag = false;
         String nameProduct = new String();
         do {
             try {
                 nameProduct = JOptionPane.showInputDialog(message, value);
             } catch (Exception e) {
-                showMessageDialog(null, "Please, insert correct values");
+                showMessageDialog(null, "Invalid input. Please, insert a correct value.");
                 flag = true;
             }
         } while (flag);
@@ -42,9 +62,9 @@ public class Menu extends javax.swing.JFrame {
         String name = "Insert the name of the new Product :";
         String price = "Insert the price of the new product : ";
         String stock = "Insert the stock of the new product : ";
-        String newName = askUserInfo(name, "");
-        double newPrice = Double.parseDouble(askUserInfo(price, ""));
-        int newStock = Integer.parseInt(askUserInfo(stock, ""));
+        String newName = askForInput(name, "");
+        double newPrice = askForDouble(price, "");
+        int newStock = askForInt(stock, "");
         inventory.createProduct(product, newName, newPrice, newStock);
         return product;
     }
@@ -71,9 +91,9 @@ public class Menu extends javax.swing.JFrame {
     public void updateTable(Product product, int selectedRow, int a) {
         switch (a) {
             case 0:
-                String newName = askUserInfo("Insert the new name of the Product: ", product.getName());
-                Double newPrice = Double.valueOf(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getPrice())));
-                int newStock = Integer.parseInt(askUserInfo("Insert the new price of the product: ", String.valueOf(product.getStock())));
+                String newName = askForInput("Insert the new name of the Product: ", product.getName());
+                Double newPrice = askForDouble("Insert the new price of the product: ", String.valueOf(product.getPrice()));
+                int newStock = askForInt("Insert the new price of the product: ", String.valueOf(product.getStock()));
                 // Update the product
                 inventory.updateProduct(product, newName, newPrice, newStock);
                 // Update the model with the new values
