@@ -29,7 +29,7 @@ public class Menu extends javax.swing.JFrame {
             try {
                 result = Integer.parseInt(askForInput(message, value));
                 if (result < 0) {
-                    JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+                    JOptionPane.showMessageDialog(null, "Please, insert a positive value.");
                     result = -1;
                 }
             } catch (NumberFormatException e) {
@@ -46,7 +46,7 @@ public class Menu extends javax.swing.JFrame {
             try {
                 result = Double.parseDouble(askForInput(message, value));
                 if (result < 0) {
-                    JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+                    JOptionPane.showMessageDialog(null, "Please, insert a positive value.");
                     result = -1;
                 }
             } catch (NumberFormatException e) {
@@ -59,12 +59,18 @@ public class Menu extends javax.swing.JFrame {
 
     public String askForName(String message, String value) {
         String result;
+        Boolean validName=true;
         do {
             result = askForInput(message, value);
             if (result.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+            } else{
+                validName = inventory.validName(result);
+                if(validName){
+                    JOptionPane.showMessageDialog(null, "It already exist a product with that name. Please, insert another name.");
+                }
             }
-        } while (result.trim().isEmpty());
+        } while (result.trim().isEmpty() || validName);
         return result;
     }
 
@@ -87,7 +93,7 @@ public class Menu extends javax.swing.JFrame {
         String name = "Insert the name of the new Product :";
         String price = "Insert the price of the new product : ";
         String stock = "Insert the stock of the new product : ";
-        String newName = askForInput(name, "");
+        String newName = askForName(name, "");
         double newPrice = askForDouble(price, "");
         int newStock = askForInt(stock, "");
         inventory.createProduct(product, newName, newPrice, newStock);
@@ -116,7 +122,7 @@ public class Menu extends javax.swing.JFrame {
     public void updateTable(Product product, int selectedRow, int a) {
         switch (a) {
             case 0:
-                String newName = askForInput("Insert the new name of the Product: ", product.getName());
+                String newName = askForName("Insert the new name of the Product: ", product.getName());
                 Double newPrice = askForDouble("Insert the new price of the product: ", String.valueOf(product.getPrice()));
                 int newStock = askForInt("Insert the new price of the product: ", String.valueOf(product.getStock()));
                 // Update the product
@@ -154,17 +160,25 @@ public class Menu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblInventory = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-        btnAddProduct = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         btnEditProduct = new javax.swing.JButton();
+        btnAddProduct = new javax.swing.JButton();
         removeProduct = new javax.swing.JButton();
+        lblInventoryManagment = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(229, 229, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblInventory.setBackground(new java.awt.Color(240, 240, 240));
+        tblInventory.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         tblInventory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -175,71 +189,80 @@ public class Menu extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblInventory);
 
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 320, 270));
+
+        txtSearch.setBackground(new java.awt.Color(240, 240, 240));
+        txtSearch.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jPanel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 314, -1));
+
+        btnSearch.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         btnSearch.setText("Search");
+        btnSearch.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearchActionPerformed(evt);
             }
         });
+        jPanel1.add(btnSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 80, 110, -1));
 
-        btnAddProduct.setText("Add Product");
-        btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddProductActionPerformed(evt);
-            }
-        });
+        jPanel2.setBackground(new java.awt.Color(204, 204, 255));
 
+        btnEditProduct.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         btnEditProduct.setText("Edit Product");
+        btnEditProduct.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnEditProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditProductActionPerformed(evt);
             }
         });
 
+        btnAddProduct.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
+        btnAddProduct.setText("Add Product");
+        btnAddProduct.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddProductActionPerformed(evt);
+            }
+        });
+
+        removeProduct.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         removeProduct.setText("Remove Product");
+        removeProduct.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         removeProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeProductActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(89, 89, 89)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(txtSearch)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
-                .addGap(33, 33, 33)
-                .addComponent(btnSearch)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnAddProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEditProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeProduct, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
+                .addGap(16, 16, 16))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
                 .addComponent(btnAddProduct)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                .addGap(64, 64, 64)
                 .addComponent(btnEditProduct)
-                .addGap(73, 73, 73)
+                .addGap(64, 64, 64)
                 .addComponent(removeProduct)
-                .addGap(85, 85, 85))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(41, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearch))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddProduct)
-                    .addComponent(btnEditProduct)
-                    .addComponent(removeProduct))
-                .addGap(36, 36, 36))
-        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 130, 150, 310));
+
+        lblInventoryManagment.setFont(new java.awt.Font("Lucida Handwriting", 1, 24)); // NOI18N
+        lblInventoryManagment.setText("Inventory Managment");
+        jPanel1.add(lblInventoryManagment, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -303,7 +326,10 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnEditProduct;
     private javax.swing.JButton btnSearch;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblInventoryManagment;
     private javax.swing.JButton removeProduct;
     private javax.swing.JTable tblInventory;
     private javax.swing.JTextField txtSearch;

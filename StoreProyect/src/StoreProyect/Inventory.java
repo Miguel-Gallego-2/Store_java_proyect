@@ -46,15 +46,12 @@ public class Inventory {
                     p.setStock(stock);
                 });
     }
-/*
-    public boolean validName(String newName, boolean valid) {
-        boolean isValid = true;
-        for (String name : lstProducts) {
-            System.out.println(name);
-        }
-        isValid = lstProducts.stream(name -> name.getName().equals(newName));
-        return isValid;
-    }*/
+
+    public boolean validName(String newProductName) {
+        boolean isValid;
+        isValid = lstProducts.stream().anyMatch(p->p.getName().equals(newProductName));
+        return isValid;  
+    }
 
     public Product getProduct(String name, double price, int stock) {
         Product selectedProduct = null;
