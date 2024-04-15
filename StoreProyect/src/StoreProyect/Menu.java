@@ -23,24 +23,49 @@ public class Menu extends javax.swing.JFrame {
         initObjects();
     }
 
-    public  int askForInt(String message,String value) {
-        while (true) {
+    public int askForInt(String message, String value) {
+        int result;
+        do {
             try {
-                return Integer.parseInt(askForInput(message,value));
+                result = Integer.parseInt(askForInput(message, value));
+                if (result < 0) {
+                    JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+                    result = -1;
+                }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+                result = -1;
             }
-        }
+        } while (result < 0);
+        return result;
     }
 
-    public  double askForDouble(String message,String value) {
-        while (true) {
+    public double askForDouble(String message, String value) {
+        double result;
+        do {
             try {
-                return Double.parseDouble(askForInput(message,value));
+                result = Double.parseDouble(askForInput(message, value));
+                if (result < 0) {
+                    JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+                    result = -1;
+                }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+                result = -1;
             }
-        }
+        } while (result < 0);
+        return result;
+    }
+
+    public String askForName(String message, String value) {
+        String result;
+        do {
+            result = askForInput(message, value);
+            if (result.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
+            }
+        } while (result.trim().isEmpty());
+        return result;
     }
 
     public String askForInput(String message, String value) {
