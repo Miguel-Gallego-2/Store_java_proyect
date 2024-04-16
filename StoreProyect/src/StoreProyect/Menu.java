@@ -121,7 +121,7 @@ public class Menu extends javax.swing.JFrame {
 
     public void updateTable(Product product, int selectedRow, int a) {
         switch (a) {
-            case 0:
+            case 0 -> {
                 String newName = askForName("Insert the new name of the Product: ", product.getName());
                 Double newPrice = askForDouble("Insert the new price of the product: ", String.valueOf(product.getPrice()));
                 int newStock = askForInt("Insert the new price of the product: ", String.valueOf(product.getStock()));
@@ -131,11 +131,11 @@ public class Menu extends javax.swing.JFrame {
                 tableModel.setValueAt(newName, selectedRow, 0);
                 tableModel.setValueAt(newPrice, selectedRow, 1);
                 tableModel.setValueAt(newStock, selectedRow, 2);
-                break;
-            case 1:
+            }
+            case 1 -> {
                 inventory.removeProduct(product);
                 initObjects();
-                break;
+            }
         }
     }
 
@@ -268,15 +268,13 @@ public class Menu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 29, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
