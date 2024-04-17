@@ -66,6 +66,9 @@ public class Menu extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Invalid input. Please, insert a correct value.");
             } else{
                 validName = inventory.validName(result);
+                if(value.equals(result)){
+                    return result;
+                }
                 if(validName){
                     JOptionPane.showMessageDialog(null, "It already exist a product with that name. Please, insert another name.");
                 }
